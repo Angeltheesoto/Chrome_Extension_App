@@ -1,12 +1,22 @@
 
 // Assigned variables
 let myLeads = [];
-let oldLeads = [];
 const inputEl = document.getElementById("input-el");
 const inputBtn = document.getElementById('input-btn');
 const ulEl = document.getElementById('ul-el');
 const deleteBtn = document.getElementById("delete-btn");
+const leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads"))
+const tabBtn = document.getElementById('tab-btn');
 // Assigned variables
+
+// This lets you take the current tab -
+tabBtn.addEventListener('click', function() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  myLeads.push(tabs[0].url)
+  localStorage.setItem("myLeads", JSON.stringify(myLeads))
+  render(myLeads)
+  });
+})
 
 if (leadsFromLocalStorage) {
  myLeads = leadsFromLocalStorage
@@ -22,10 +32,11 @@ function render(leads) {
   // or below
   // listItems += '<li><a target="_blank" href="' + myLeads[i] + '">' + myLeads[i] + '</a></li>';
   // or
+  // template literals below
   listItems += `
    <li>
-    <a target="_blank" href="${myLeads[i]}">
-     ${myLeads[i]}
+    <a target="_blank" href="${leads[i]}">
+     ${leads[i]}
     </a>
    </li>
   `
@@ -58,8 +69,6 @@ deleteBtn.addEventListener('dblclick', function() {
  myLeads = []
  render(myLeads)
 })
-
-const leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") );
 
 // How pros do it - below
 inputBtn.addEventListener('click', function() {
